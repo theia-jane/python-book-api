@@ -6,3 +6,11 @@ This is a 'toy' repository as I complete [[https://programminghistorian.org/en/l
 #+begin_src bash :subprocess
 python server.py
 #+end_src
+
+* Get the database
+#+begin_src bash
+if [ ! -e "books.db" ]; then 
+    curl -o books.db \
+         "https://programminghistorian.org/assets/creating-apis-with-python-and-flask/books.db"
+fi
+#+end_src
