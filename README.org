@@ -14,3 +14,58 @@ if [ ! -e "books.db" ]; then
          "https://programminghistorian.org/assets/creating-apis-with-python-and-flask/books.db"
 fi
 #+end_src
+** Fix database
+:PROPERTIES:
+:header-args:sqlite: :db books.db 
+:END:
+
+The database I downloaded did not have any =id='s. I think this might be because
+the =id= column doesn't have =autoincrement=, but I don't know. We we are going
+to create a duplicate table with the right schema and copy the data over.
+
+We'll start with the existing schema:
+#+begin_src sqlite :results output
+.schema books
+#+end_src
+
+#+RESULTS:
+: CREATE TABLE books (
+:        id primary key,
+:        published INT,
+:        author VARCHAR,
+:        title VARCHAR,       
+:        first_sentence VARCHAR
+:        );
+
+And modify that to create a new, table copy
+#+begin_src sqlite
+CREATE TABLE books_copy (
+       id integer primary key autoincrement not null,
+       published INT,
+       author VARCHAR,
+       title VARCHAR,       
+       first_sentence VARCHAR
+       );
+#+END_SRC
+
+Now we copy over all of our data
+#+begin_src sqlite 
+INSERT INTO books_copy (published, author, title, first_sentence)
+   SELECT  published, author, title, first_sentence FROM books;
+#+END_SRC
+
+#+RESULTS:
+
+We'll verify that we have ids now
+#+begin_src sqlite
+select * from books_copy where id = 1;
+#+end_src
+
+#+RESULTS:
+| 1 | 2014 | Ann Leckie | Ancillary Justice | The body lay naked and facedown, a deathly gray, spatters of blood staining the snow around it. |
+
+We have our id, so we'll get rid of the old table and rename the new one
+#+begin_src sqlite 
+DROP TABLE books;
+ALTER TABLE books_copy RENAME TO books;
+#+end_src
