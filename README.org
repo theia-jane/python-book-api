@@ -1,3 +1,8 @@
 #+TITLE: Python Book API
 
 This is a 'toy' repository as I complete [[https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#lesson-goals][Creating Web APIs with Python and Flask]]. I may deviate from that tutorial, but that is my starting point. 
+
+* Run
+#+begin_src bash :subprocess
+python server.py
+#+end_src
