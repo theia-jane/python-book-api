@@ -1,17 +1,15 @@
 from flask import Flask, request, jsonify
-import sqlite3
 
 def dictionaryRowFactory(cursor, row):
     return { column[0]: row[i] for i, column in enumerate(cursor.description) }
 
-def fetchAllBooks(query, params={}):
-    conn = sqlite3.connect('books.db')
-    conn.row_factory = dictionaryRowFactory
-    return conn.cursor().execute(query, params).fetchall()
-
-def createApp():
+def createApp(connection):
     app = Flask(__name__)
     app.config['DEBUG'] = True
+    connection.row_factory = dictionaryRowFactory
+
+    def fetchAllBooks(query, params={}):
+        return connection.cursor().execute(query, params).fetchall()
 
     @app.route('/', methods = ['GET'])
     def home():

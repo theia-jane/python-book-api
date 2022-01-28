@@ -1,2 +1,5 @@
+import sqlite3
 from app import createApp 
-createApp().run()
+
+connection = sqlite3.connect('books.db')
+createApp(connection).run()
